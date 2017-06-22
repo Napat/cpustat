@@ -19,7 +19,7 @@
 #ifdef ENABLE_SHAREMEM	
 
 static void shm_init_val(cpustat_info_t *info){
-	memcpy((cpustat_info_t *)info->shmem, info, sizeof(info));
+	memcpy((cpustat_info_t *)info->shmem, info, sizeof(*info));
 }
 
 static int shm_init_server(cpustat_info_t *info, int key) {
