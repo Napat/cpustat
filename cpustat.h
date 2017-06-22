@@ -19,7 +19,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-//#define ENABLE_SHAREMEM
+#define ENABLE_SHAREMEM
 
 #define CPUSTAT_SHAREMEM_KEY	(1986)
 
