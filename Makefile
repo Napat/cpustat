@@ -10,7 +10,7 @@
 LDFLAGS += -lpthread -lm
 BIN_DIR := bin
 
-all: makedir cpustat mips_cpustat client_sample
+all: makedir cpustat client_sample
 
 FORCE:
 
