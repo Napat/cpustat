@@ -91,7 +91,6 @@ static void *cpuinfo_monitor_thread_func(void *ptr) {
 	cpustat_info_t *info = (cpustat_info_t*)ptr;
 	int idx;
 	int cpucores = cpustat_number_cpucores(info);	
-	double *percentage;	
 	unsigned long long **pre_cpustatsnap = malloc_cpustatsnap( cpucores );
 	unsigned long long **now_cpustatsnap = malloc_cpustatsnap( cpucores );
 	int cpux_load;
