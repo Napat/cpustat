@@ -18,7 +18,7 @@
 #include "cpustat.h"
 
 int main(int argc, char const *argv[]){
-#ifdef ENABLE_SHAREMEM	
+#ifdef CPUSTAT_ENABLE_SHAREMEM	
 	int idx;
 	cpustat_info_t * cpustat_info = cpustat_info_client_sharemem(); 
 	printf("\t Number of cpu cores: %d\r\n", cpustat_number_cpucores(cpustat_info) );

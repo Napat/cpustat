@@ -19,7 +19,7 @@
 #include <sys/ipc.h>
 #include <sys/shm.h>
 
-#define ENABLE_SHAREMEM
+#define CPUSTAT_ENABLE_SHAREMEM
 
 #define CPUSTAT_VERSION 		"0.69"
 #define CPUSTAT_SHAREMEM_KEY	(1986)
@@ -30,13 +30,13 @@ struct cpustat_info_s {
 	int sampling_timesec;				/**< Sampling time between any snapshot use to calculate */
 	int number_cpucores;				/**< Number of cpus cores */
 	int cpuload_corex[CPUSTAT_MAXCPU];	/**< CPUx load percentage, Note that index 0 is the average of all cpus percentage */
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	int* shmem;
 #endif	
 };
 typedef struct cpustat_info_s cpustat_info_t;
 
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 // for client apps to access cpustat info via sharemem
 cpustat_info_t * cpustat_info_client_sharemem(); 
 #endif

@@ -16,7 +16,7 @@
 #define PROCSTAT "/proc/stat"
 //#define DEBUG_CPUSTAT
 
-#ifdef ENABLE_SHAREMEM	
+#ifdef CPUSTAT_ENABLE_SHAREMEM	
 
 static void shm_init_val(cpustat_info_t *info){
 	memcpy((cpustat_info_t *)info->shmem, info, sizeof(*info));
@@ -35,11 +35,11 @@ static int shm_init_server(cpustat_info_t *info, int key) {
 	memset(info->shmem, 0, sizeof(*info));
 	return 0;
 }
-#endif	/* ENABLE_SHAREMEM */
+#endif	/* CPUSTAT_ENABLE_SHAREMEM */
 
 cpustat_info_t * cpustat_info_client_sharemem() {
 	static cpustat_info_t* info = NULL;
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	if(info == NULL){
 		int shmid;
 		fprintf(stdout,"%s(%d) Initializing shared memory.\r\n", __FUNCTION__, __LINE__);
@@ -51,7 +51,7 @@ cpustat_info_t * cpustat_info_client_sharemem() {
 		}
 		info = (cpustat_info_t*)shmat(shmid, (void *)0, 0);
 	}
-#endif	/* ENABLE_SHAREMEM */
+#endif	/* CPUSTAT_ENABLE_SHAREMEM */
 	return info;
 }
 
@@ -64,7 +64,7 @@ static cpustat_info_t *new_cpustat_info() {
 	info->sampling_timesec = 1;	
 	info->number_cpucores = number_cpucores();	
 
-#ifdef ENABLE_SHAREMEM	
+#ifdef CPUSTAT_ENABLE_SHAREMEM	
 	shm_init_server(info, CPUSTAT_SHAREMEM_KEY);
 	shm_init_val(info);	
 #endif
@@ -162,7 +162,7 @@ bool cpustat_isdebug(cpustat_info_t* info){
  * 
  */
 bool cpustat_isdebug_set(cpustat_info_t* info, bool isdebug){
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
 	shmem_ptr->debug = isdebug;
 #endif	
@@ -184,7 +184,7 @@ int cpustat_sampling_timesec(cpustat_info_t* info){
  * 
  */
 bool cpustat_sampling_timesec_set(cpustat_info_t* info, int sampling_timesec){
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
 	shmem_ptr->sampling_timesec = sampling_timesec;
 #endif	
@@ -206,7 +206,7 @@ int cpustat_number_cpucores(cpustat_info_t* info){
  * 
  */
 bool cpustat_number_cpucores_set(cpustat_info_t* info, int number_cpucores){
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
 	shmem_ptr->number_cpucores = number_cpucores;
 #endif	
@@ -229,7 +229,7 @@ int cpustat_cpux_percentload(cpustat_info_t* info, int cpu_idx){
  * Note that index 0 is the average of all cpus percentage
  */
 bool cpustat_cpux_percentload_set(cpustat_info_t* info, int cpu_idx, int load_percentage){
-#ifdef ENABLE_SHAREMEM
+#ifdef CPUSTAT_ENABLE_SHAREMEM
 	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
 	shmem_ptr->cpuload_corex[cpu_idx] = load_percentage;
 #endif	
