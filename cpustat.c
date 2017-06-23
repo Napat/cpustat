@@ -24,12 +24,11 @@ static void shm_init_val(cpustat_info_t *info){
 
 static int shm_init_server(cpustat_info_t *info, int key) {
 	int shmid;
-	printf("%s(%d) Initializing shared memory.\r\n", __FUNCTION__, __LINE__);
-
-	//system_sync_printf("echo %d > /tmp/ipc_sharemem_size", sizeof(cpustat_info_t));
+	fprintf(stdout, "%s(%d) Initializing shared memory.\r\n", __FUNCTION__, __LINE__);
+	
 	shmid = shmget(key, sizeof(*info), 0666 | IPC_CREAT);
 	if(shmid < 0) {
-		printf("%s(%d): Fail to allocate shared memory.\r\n", __FUNCTION__, __LINE__);
+		fprintf(stderr, "%s(%d): Fail to allocate shared memory.\r\n", __FUNCTION__, __LINE__);
 		return -1;
 	}
 	info->shmem = shmat(shmid, (void *)0, 0);
@@ -43,12 +42,11 @@ cpustat_info_t * cpustat_info_client_sharemem() {
 #ifdef ENABLE_SHAREMEM
 	if(info == NULL){
 		int shmid;
-		printf("%s(%d) Initializing shared memory.\r\n", __FUNCTION__, __LINE__);
+		fprintf(stdout,"%s(%d) Initializing shared memory.\r\n", __FUNCTION__, __LINE__);
 
-		//system_sync_printf("echo %d > /tmp/ipc_sharemem_size", sizeof(cpustat_info_t));
 		shmid = shmget(CPUSTAT_SHAREMEM_KEY, sizeof(*info), 0666);
 		if(shmid < 0) {
-			printf("%s(%d): Fail to get shared memory.\r\n", __FUNCTION__, __LINE__);
+			fprintf(stderr, "%s(%d): Fail to get shared memory.\r\n", __FUNCTION__, __LINE__);
 			return NULL;
 		}
 		info = (cpustat_info_t*)shmat(shmid, (void *)0, 0);
@@ -62,6 +60,7 @@ static cpustat_info_t *new_cpustat_info() {
 	info = calloc(1, sizeof(cpustat_info_t));
 
 	// init default values
+	info->debug = false;
 	info->sampling_timesec = 1;	
 	info->number_cpucores = number_cpucores();	
 
@@ -91,17 +90,18 @@ static void *cpuinfo_monitor_thread_func(void *ptr) {
 	cpustat_info_t *info = (cpustat_info_t*)ptr;
 	int idx;
 	int cpucores = cpustat_number_cpucores(info);	
+	//double *percentage;	
 	unsigned long long **pre_cpustatsnap = malloc_cpustatsnap( cpucores );
 	unsigned long long **now_cpustatsnap = malloc_cpustatsnap( cpucores );
 	int cpux_load;
 	
-	#ifdef DEBUG_CPUSTAT		
-		printf("CPU");	
+	if(cpustat_isdebug(info) == true){		
+		fprintf(stdout, "CPU");	
 		for(idx = 1; idx <= cpucores; idx++) {
-			printf("\tCPU#%d", idx);
+			fprintf(stdout, "\tCPU#%d", idx);
 		}	
-		printf("\r\n");
-	#endif
+		fprintf(stdout, "\r\n");
+	}
 	
 	sampling_cpustatsnap(cpucores, now_cpustatsnap);
 	while(1) {
@@ -113,11 +113,13 @@ static void *cpuinfo_monitor_thread_func(void *ptr) {
 		for(idx = 0; idx<=cpucores; idx++){
 			cpux_load = cal_cpu_percentage(now_cpustatsnap[idx], pre_cpustatsnap[idx]);
 			cpustat_cpux_percentload_set(info, idx, cpux_load);
-			#ifdef DEBUG_CPUSTAT
-				printf("%.2d\t", cpustat_cpux_percentload(info, idx));
-			#endif
+			if(cpustat_isdebug(info) == true){
+				fprintf(stdout, "%.2d\t", cpustat_cpux_percentload(info, idx));
+			}
 		}
-		printf("\r\n");
+		if(cpustat_isdebug(info) == true){
+			fprintf(stdout, "\r\n");
+		}
 	}
 	free_cpustatsnap( cpucores, pre_cpustatsnap );
 	free_cpustatsnap( cpucores, now_cpustatsnap );
@@ -141,10 +143,32 @@ bool init_cpustat_monitor(int sampling_timesec){
 int start_cpustat_monitor(){
 	pthread_t thread;
 	if(pthread_create(&thread, NULL, cpuinfo_monitor_thread_func, (void*)cpustat_info())){
-		printf("%s(%d) pthread_create failed\r\n", __FUNCTION__, __LINE__);
+		fprintf(stderr, "%s(%d) pthread_create failed\r\n", __FUNCTION__, __LINE__);
 		return -1;
 	}
 	return 0;
+}
+
+/**
+ * @brief Get is debug
+ * 
+ */
+bool cpustat_isdebug(cpustat_info_t* info){
+	return info->debug;
+}
+
+/**
+ * @brief Set debug
+ * 
+ */
+bool cpustat_isdebug_set(cpustat_info_t* info, bool isdebug){
+#ifdef ENABLE_SHAREMEM
+	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
+	shmem_ptr->debug = isdebug;
+#endif	
+	info->debug = isdebug;
+	
+	return true;
 }
 
 /**

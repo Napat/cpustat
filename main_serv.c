@@ -9,12 +9,31 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-
 #include "cpustat.h"
 
+void show_version( char *argv[]){
+	fprintf(stdout, "%s version %s\n", argv[0], CPUSTAT_VERSION);
+	return;
+}
 
-int main(){	
+int main(int argc, char *argv[]){	
 	int idx;
+
+	int opt;
+    while ((opt = getopt(argc, argv, "dv")) != -1) {
+        switch (opt) {
+        case 'd': cpustat_isdebug_set(cpustat_info(), true); break;
+        case 'v': 
+        	show_version(argv);
+        	exit(EXIT_SUCCESS);
+        	break;        
+        default:
+            fprintf(stderr, "Usage: %s [-dv] [file...]\n", argv[0]);
+            exit(EXIT_FAILURE);
+        }
+    }
+
+    printf("Debug: %s\r\n", (cpustat_isdebug(cpustat_info())==false)?"DISABLE":"ENABLE" );
 
 	init_cpustat_monitor(3);
 	start_cpustat_monitor();
