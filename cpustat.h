@@ -47,8 +47,8 @@ int cpustat_sampling_timesec(cpustat_info_t* info);
 bool cpustat_sampling_timesec_set(cpustat_info_t* info, int sampling_timesec);
 int cpustat_number_cpucores(cpustat_info_t* info);
 bool cpustat_number_cpucores_set(cpustat_info_t* info, int number_cpucores);
-int cpustat_cpux_perentload(cpustat_info_t* info, int cpu_idx);
-bool cpustat_cpux_perentload_set(cpustat_info_t* info, int cpu_idx, int load_percentage);
+int cpustat_cpux_percentload(cpustat_info_t* info, int cpu_idx);
+bool cpustat_cpux_percentload_set(cpustat_info_t* info, int cpu_idx, int load_percentage);
 
 // cpustatsnap api: Low level api, no need to init thread but may not effectively and very complex to use.
 int	number_cpucores();	// For more efficiency should use cpustat_number_cpucores()

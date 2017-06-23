@@ -112,9 +112,9 @@ static void *cpuinfo_monitor_thread_func(void *ptr) {
 
 		for(idx = 0; idx<=cpucores; idx++){
 			cpux_load = cal_cpu_percentage(now_cpustatsnap[idx], pre_cpustatsnap[idx]);
-			cpustat_cpux_perentload_set(info, idx, cpux_load);
+			cpustat_cpux_percentload_set(info, idx, cpux_load);
 			#ifdef DEBUG_CPUSTAT
-				printf("%.2d\t", cpustat_cpux_perentload(info, idx));
+				printf("%.2d\t", cpustat_cpux_percentload(info, idx));
 			#endif
 		}
 		printf("\r\n");
@@ -195,7 +195,7 @@ bool cpustat_number_cpucores_set(cpustat_info_t* info, int number_cpucores){
  * 
  * Note that index 0 is the average of all cpus percentage
  */
-int cpustat_cpux_perentload(cpustat_info_t* info, int cpu_idx){
+int cpustat_cpux_percentload(cpustat_info_t* info, int cpu_idx){
 	return info->cpuload_corex[cpu_idx];
 }
 
@@ -204,7 +204,7 @@ int cpustat_cpux_perentload(cpustat_info_t* info, int cpu_idx){
  * 
  * Note that index 0 is the average of all cpus percentage
  */
-bool cpustat_cpux_perentload_set(cpustat_info_t* info, int cpu_idx, int load_percentage){
+bool cpustat_cpux_percentload_set(cpustat_info_t* info, int cpu_idx, int load_percentage){
 #ifdef ENABLE_SHAREMEM
 	cpustat_info_t *shmem_ptr = (cpustat_info_t *)info->shmem;
 	shmem_ptr->cpuload_corex[cpu_idx] = load_percentage;

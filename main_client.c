@@ -23,10 +23,10 @@ int main(int argc, char const *argv[]){
 	cpustat_info_t * cpustat_info = cpustat_info_client_sharemem(); 
 	printf("\t Number of cpu cores: %d\r\n", cpustat_number_cpucores(cpustat_info) );
 	printf("\t Set sampling rate to: %d\r\n", cpustat_sampling_timesec(cpustat_info) );
-	printf("\t Averaage load of all cpus is %d %%\r\n", cpustat_cpux_perentload(cpustat_info, 0));
+	printf("\t Averaage load of all cpus is %d %%\r\n", cpustat_cpux_percentload(cpustat_info, 0));
 	
 	for(idx=1; idx<cpustat_number_cpucores(cpustat_info)+1; idx++){
-		printf("\t cpu[%d] loading %d %%\r\n", idx, cpustat_cpux_perentload(cpustat_info, idx));
+		printf("\t cpu[%d] loading %d %%\r\n", idx, cpustat_cpux_percentload(cpustat_info, idx));
 	}
 #else
 	printf("No way to get info...\r\n");

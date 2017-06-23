@@ -27,7 +27,7 @@ int main(){
 
 	while(1){
 		for(idx = 0; idx<=cpustat_number_cpucores(cpustat_info()); idx++){
-			printf("%.2d\t", cpustat_cpux_perentload(cpustat_info(), idx));
+			printf("%.2d\t", cpustat_cpux_percentload(cpustat_info(), idx));
 		}
 		printf("\r\n");
 
