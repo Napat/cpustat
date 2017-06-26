@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <cpustat.h>
 
-#define PRINTF(...)		do {  if(cpustat_isdebug(cpustat_info())==true) fprintf(stderr, __VA_ARGS__); 	} while (0)
+#define PRINTF(...)		do {  if(cpustat_isdebug(cpustat_info())==true) fprintf(stdout, __VA_ARGS__); 	} while (0)
 
 void show_version( char *argv[]){
 	fprintf(stdout, "%s version %s\n", argv[0], CPUSTAT_VERSION);
