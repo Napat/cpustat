@@ -7,6 +7,8 @@
 #  * @License: GNU General Public License v2.0 
 #  */
 
+include make.rules
+
 LDFLAGS += -lpthread -lm
 BIN_DIR := bin
 
@@ -18,13 +20,13 @@ makedir: FORCE
 	mkdir -p ${BIN_DIR}
 
 cpustat: FORCE
-	gcc main_serv.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out
+	$(CC) main_serv.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out
 
-mips_cpustat: FORCE
-	/opt/codefidence/bin/mipsel-linux-gcc main_serv.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out	
+#mips_cpustat: FORCE
+#	/opt/codefidence/bin/mipsel-linux-gcc main_serv.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out	
 
 client_sample: FORCE
-	gcc main_client.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out
+	$(CC) main_client.c cpustat.c ${LDFLAGS} -o ${BIN_DIR}/$@.out
 
 clean: FORCE
 	rm -rf *.o *.out  ${BIN_DIR}
