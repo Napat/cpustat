@@ -9,7 +9,9 @@
 
 #include <fcntl.h>
 #include <unistd.h>
-#include "cpustat.h"
+#include <cpustat.h>
+
+#define PRINTF(...)		do {  if(cpustat_isdebug(cpustat_info())==true) fprintf(stderr, __VA_ARGS__); 	} while (0)
 
 void show_version( char *argv[]){
 	fprintf(stdout, "%s version %s\n", argv[0], CPUSTAT_VERSION);
@@ -33,22 +35,22 @@ int main(int argc, char *argv[]){
         }
     }
 
-    printf("Debug: %s\r\n", (cpustat_isdebug(cpustat_info())==false)?"DISABLE":"ENABLE" );
+    PRINTF("Debug: %s\r\n", (cpustat_isdebug(cpustat_info())==false)?"DISABLE":"ENABLE" );
 
 	init_cpustat_monitor(3);
 	start_cpustat_monitor();
 
-	printf("CPU");	
+	PRINTF("CPU");	
 	for(idx = 1; idx <= cpustat_number_cpucores(cpustat_info()); idx++){
-		printf("\tCPU#%d", idx);
+		PRINTF("\tCPU#%d", idx);
 	}	
-	printf("\r\n");
+	PRINTF("\r\n");
 
 	while(1){
 		for(idx = 0; idx<=cpustat_number_cpucores(cpustat_info()); idx++){
-			printf("%.2d\t", cpustat_cpux_percentload(cpustat_info(), idx));
+			PRINTF("%.2d\t", cpustat_cpux_percentload(cpustat_info(), idx));
 		}
-		printf("\r\n");
+		PRINTF("\r\n");
 
 		sleep(1);
 	}
